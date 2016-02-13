@@ -1,5 +1,5 @@
 import myo as libmyo
-libmyo.init('C:/Users/Kevin/Documents/treehacks/notTree/myo-sdk-win-0.9.0/bin')
+libmyo.init('C:/Users/Matthew/Downloads/myo-sdk-win-0.9.0/bin')
 feed = libmyo.device_listener.Feed()
 hub = libmyo.Hub()
 hub.run(1000, feed)
