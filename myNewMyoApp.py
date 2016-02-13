@@ -9,10 +9,21 @@ try:
     if not myo:
         print("No Myo connected after 10 seconds.")
         sys.exit()
-
+    if hub.running and myo.connected:
+        quat = myo.orientation
+        firstX = quat.x
+        firstY = quat.y
+        firstZ = quat.z
+        YReset = False
     while hub.running and myo.connected:
         quat = myo.orientation
-        print("Orientation:", quat.x, quat.y, quat.z, quat.w)
+        if (quat.x - firstX > 0.2 and not YReset):
+            YReset = True
+            print("down")
+        if (quat.x - firstX < 0.2 and YReset):
+            YReset = False
+            print("reset")
+        #print("Orientation:", round(quat.w, 3), round(quat.y, 3), round(quat.z, 3))
 except KeyboardInterrupt:
     print("Quitting...")
 finally:
