@@ -12,7 +12,6 @@ gyroItems.selectedArray = fourFourArray;
 gyroItems.state = gyroItems.selectedArray[0];
 //make this bigger if too much jitter
 gyroItems.threshold = 20;
-var killMeOnExit;
 
 //repeats every 10 ms to compare against prevState
 function gyroRepeat(data) {
@@ -75,7 +74,6 @@ function addEvents(myo) {
                 gyroItems.state = gyroItems.selectedArray[0];
                 clearInterval(killMeOnExit);
             }
-            killMeOnExit = startBeat($(".dial").val(), myo);
         }, 2000);
     });
 }
