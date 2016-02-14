@@ -4,6 +4,7 @@ from vars import myPath
 libmyo.init(myPath)
 feed = libmyo.device_listener.Feed()
 hub = libmyo.Hub()
+ChangeThreshold = 30
 hub.run(1000, feed)
 fourFourArray = ["down", "left", "right", "up"]
 
@@ -14,8 +15,6 @@ try:
         sys.exit()
     if hub.running and myo.connected:
         selectedArray = fourFourArray
-        prevAngVel = myo.gyroscope
-        prevAccel = myo.acceleration
         i = 0
         stateCounter = 0
         receivedBeat = False
@@ -24,13 +23,13 @@ try:
         time.sleep(0.01)
         angVel = myo.gyroscope
         prevState = state
-        if angVel.z == max(abs(angVel.z), abs(angVel.y)) and angVel.z > 30:
+        if angVel.z == max(abs(angVel.z), abs(angVel.y)) and angVel.z > ChangeThreshold:
             state = "left"
-        elif angVel.y == max(abs(angVel.z), abs(angVel.y)) and angVel.y > 30:
+        elif angVel.y == max(abs(angVel.z), abs(angVel.y)) and angVel.y > ChangeThreshold:
             state = "up"
-        elif angVel.z == -max(abs(angVel.z), abs(angVel.y)) and angVel.z < -30:
+        elif angVel.z == -max(abs(angVel.z), abs(angVel.y)) and angVel.z < -ChangeThreshold:
             state = "right"
-        elif angVel.y == -max(abs(angVel.z), abs(angVel.y)) and angVel.y < -30:
+        elif angVel.y == -max(abs(angVel.z), abs(angVel.y)) and angVel.y < -ChangeThreshold:
             state = "down"
         if prevState != state:
             if not receivedBeat and prevState == selectedArray[i % len(selectedArray)]:
