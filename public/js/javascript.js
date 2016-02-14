@@ -6,6 +6,7 @@ var conduct = false;
 var pushOntoMe = [];
 var holder = 0;
 var trials = 1;
+var dontSendFirst = 0;
 gyroItems.prevState;
 gyroItems.receivedBeat;
 gyroItems.beatNumber = 0;
@@ -50,20 +51,23 @@ function beat() {
   var modMe = gyroItems.beatNumber;
   $("#otherCircle").show();
   setTimeout(function() {
-      $("#otherCircle").hide()
+      $("#otherCircle").hide();
   }, 100);
-  if (holder != 0) {
-      pushOntoMe.push(holder - Date.now())
+  if (dontSendFirst > 1) {
+      pushOntoMe.push(holder - Date.now());
   }
+  dontSendFirst++;
   holder = Date.now();
   var arrowNum = (modMe % 4) + 1;
   var myArrow = ".arrow" + arrowNum.toString();
-  if ($(myArrow).css("color") != "rgb(158, 158, 158)") {
-    $(".correct").css("color", "#66bb6a");
-    $(".incorrect").css("color", "");
-  } else {
-    $(".correct").css("color", "");
-    $(".incorrect").css("color", "#ef5350");
+  if ($("#box1").is(":checked")) {
+    if ($(myArrow).css("color") != "rgb(158, 158, 158)") {
+      $(".correct").css("color", "#66bb6a");
+      $(".incorrect").css("color", "");
+    } else {
+      $(".correct").css("color", "");
+      $(".incorrect").css("color", "#ef5350");
+    }
   }
 }
 
@@ -84,7 +88,7 @@ function addEvents(myo) {
               gyroItems.selectedArray = fourFourArray;
               gyroItems.state = gyroItems.selectedArray[0];
           }
-      }, 2000);
+      }, 3000);
   });
 }
 try {
@@ -105,7 +109,7 @@ $(document).ready(function(){
 		height: 200
 	});
 
-	var conduct = false, countdown = false, feedback = false;
+	var conduct = false, countdown = false;
 	var beats;
 	var tempo;
   var delta;
@@ -132,25 +136,30 @@ $(document).ready(function(){
 
     //var timestamps = [16,23,36,45,23,64,13,09,88,23,75,82,79,85,78,29,37,48,97,23,98,49,72,73,89,47,28,93,79];
     var userBeat = timestamps.map(function(val,index) {
-      return 60000/(-val) < 200 ? {index:index+1, BPM:60000/(-val)} : {index:index, BPM:200};
+      return 60000/(-val) < 200 ? {index:index, BPM:60000/(-val)} : {index:index, BPM:200};
     }); // variable BPM; val is delta [i]-[i+1]
-    var baseBeat = timestamps.map(function(val,index) {return {index:index+1, BPM:tempo};}); // all constant BPM
+    var baseBeat = timestamps.map(function(val,index) {return {index:index, BPM:tempo};}); // all constant BPM
+
+    userBeat = userBeat.slice(1);
+    baseBeat = baseBeat.slice(1);
 
     var margin = {top: 80, right: 20, bottom: 30, left: 50},
       width = 960 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom;
 
     var x = d3.scale.linear()
-        .domain([1, timestamps.length])
+        .domain([1, timestamps.length-1])
         .range([0, width]);
 
     var y = d3.scale.linear()
         .domain([200, 0])
         .range([height, 0]);
 
+    var numTicks = Math.min(30, timestamps.length-1);
+
     var xAxis = d3.svg.axis()
         .scale(x)
-        .ticks(timestamps.length < 30 ? timestamps.length-1 : 30)
+        .ticks(numTicks)
         .orient("bottom");
 
     var yAxis = d3.svg.axis()
@@ -243,10 +252,6 @@ $(document).ready(function(){
 			$(this).text("FINISH"); 
 			conduct = true;
 
-			if ($("#box1").is(":checked")) {
-			  feedback = true;
-			}
-
 			$(".settings-page").fadeOut("slow", function() {
 				$(".conduct-page").fadeIn();
 			});
@@ -336,17 +341,6 @@ $(document).ready(function(){
 			$(nextArrow).css("color", "#29b6f6");
 			$(prevArrow).css("color", "");
 
-			if (feedback) {
-				// Temporary
-				if (count % 2 == 0) {
-					$(".correct").css("color", "#66bb6a");
-					$(".incorrect").css("color", "");
-				} else {
-					//$(".correct").css("color", "");
-					$(".incorrect").css("color", "#ef5350");
-				}
-			}
-
 			count++;
 		}, delay /* incorporate blip duration */);
 	}
@@ -355,7 +349,10 @@ $(document).ready(function(){
 		count = 0;
 		clearInterval(beats);
 		$("#blip")[0].pause();
-		feedback = false;
+    dontSendFirst = 0;
+
+    $(".incorrect").css("color", "");
+    $(".correct").css("color", "");
 
 		$(".arrow1").css("color", "");
 		$(".arrow2").css("color", "");
