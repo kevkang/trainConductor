@@ -1,5 +1,8 @@
 $(document).ready(function(){
-	$(".dial").knob();
+	$(".dial").knob({
+		width: 200,
+		height: 200
+	});
 
 	var conduct = false, countdown = false;
 	var beats;
