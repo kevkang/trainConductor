@@ -47,9 +47,14 @@ body {
 	text-align: center;
 }
 
-span.myo {
+span.myo, span.music-note {
 	font-family: "Overpass";
 	color: #29b6f6;
+}
+
+span.music-note {
+	font-size: 3em;
+	
 }
 
 .conduct-btn {

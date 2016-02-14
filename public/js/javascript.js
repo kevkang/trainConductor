@@ -64,10 +64,9 @@ $(document).ready(function(){
 		beats = setInterval(function() {
 			$("#blip")[0].play();
 
-			$("#circle").fadeIn(100, function() {
-				$("#circle").fadeOut(100);
-			});
-
+			$("#circle").show();
+			$("#circle").fadeOut(100);
+			
 		}, delay + 70 /* incorporate blip duration */);
 	}
 
