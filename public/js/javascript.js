@@ -1,5 +1,8 @@
 $(document).ready(function(){
-	$(".dial").knob();
+	$(".dial").knob({
+		width: 200,
+		height: 200
+	});
 
 	var conduct = false, countdown = false;
 	var beats;
@@ -66,8 +69,8 @@ $(document).ready(function(){
 
 			$("#circle").show();
 			$("#circle").fadeOut(100);
-			
-		}, delay + 70 /* incorporate blip duration */);
+
+		}, delay /* incorporate blip duration */);
 	}
 
 	function stopBeat() {
