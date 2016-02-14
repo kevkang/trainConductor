@@ -1,8 +1,12 @@
 $(document).ready(function(){
 	$(".dial").knob();
 
-	var conduct = false, countdown = false;
+	var conduct = false;
+	var countdown = false;
 	var beats;
+	var tempo;
+  var delta;
+
 	$(".conduct-btn").click(function() {
 
 		if (!conduct) {
@@ -13,10 +17,11 @@ $(document).ready(function(){
 				$(".conduct-page").fadeIn();
 			});
 
-			var tempo = $(".dial").val();
+			tempo = $(".dial").val();
+      delta = 60000/tempo;
 
 			// Start metronome and start analyzing
-			countDown(60000 / tempo);
+			countDown(delta);
 		} else if (conduct && !countdown) {
 			$(this).text("START");
 			conduct = false;
@@ -75,5 +80,83 @@ $(document).ready(function(){
 		clearInterval(beats);
 		$("#blip")[0].pause();
 	}
+
+
+
+
+
+  tempo = 60;
+  var timestamps = [16,23,36,45,23,64,13,09,88,23,75,82,79,85,78,29,37,48,97,23,98,49,72,73,89,47,28,93,79];
+  var userBeat = timestamps.map(function(val,index) {return {index:index, BPM:val};}); // variable BPM
+  var baseBeat = timestamps.map(function(val,index) {return {index:index, BPM:tempo};}); // all constant BPM
+
+  var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+  var x = d3.scale.linear()
+      .range([0, width]);
+
+  var y = d3.scale.linear()
+      .range([height, 0]);
+
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .ticks(timestamps.length-1)
+      .orient("bottom");
+
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left");
+
+  var line = d3.svg.line()
+      .x(function(d) { return x(d.index); })
+      .y(function(d) { return y(d.BPM); });
+
+  var svg = d3.select(".settings-page").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+
+  x.domain(d3.extent(userBeat, function(d) { return d.index; }));
+  y.domain(d3.extent(userBeat, function(d) { return d.BPM; }));
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("x", 6)
+      .attr("y", "-.71em")
+      .attr("dx", width)
+      .style("text-anchor", "end")
+      .text("Beat number");
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("BPM");
+
+  svg.append("path")
+      .datum(baseBeat)
+      .attr("class", "line")
+      .attr("fill-opacity", 0)
+      .attr("stroke-width", 2)
+      .attr("d", line);
+
+  svg.append("path")
+      .datum(userBeat)
+      .attr("class", "highlight line")
+      .attr("fill-opacity", 0)
+      .attr("stroke-width", 2)
+      .attr("d", line);
 
 });
