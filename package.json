@@ -1,0 +1,28 @@
+{
+  "name": "trainconductor",
+  "version": "1.0.0",
+  "description": "a Myo app to help orchestra and band conductors practice tempo.",
+  "main": "countBeats.js",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "express": "^4.13.4",
+    "myo": "^2.1.1",
+    "path": "^0.12.7",
+    "port": "^0.8.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://kevinkang@bitbucket.org/werenotalltrees/myoconductor.git"
+  },
+  "keywords": [
+    "Myo",
+    "music"
+  ],
+  "author": "Kevin Kang, Michelle Zhang, Matthew Zhu",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/werenotalltrees/myoconductor#readme"
+}
