@@ -1,13 +1,18 @@
 var Myo;
+var myMyo
 var gyroItems = {};
 var fourFourArray = ["down", "left", "right", "up"];
+var conduct = false;
+var pushOntoMe = [];
+var holder = 0;
 gyroItems.prevState;
 gyroItems.receivedBeat;
 gyroItems.beatNumber = 0;
 gyroItems.selectedArray = fourFourArray;
 gyroItems.state = gyroItems.selectedArray[0];
 //make this bigger if too much jitter
-gyroItems.threshold = 30;
+gyroItems.threshold = 20;
+var killMeOnExit;
 
 //repeats every 10 ms to compare against prevState
 function gyroRepeat(data) {
@@ -31,6 +36,7 @@ function gyroRepeat(data) {
             console.log("beat " + gyroItems.beatNumber +
                 gyroItems.selectedArray[gyroItems.beatNumber %
                 gyroItems.selectedArray.length], gyroItems.state);
+            beat();
         }
         if (gyroItems.state == gyroItems.selectedArray[
             (gyroItems.beatNumber + 1) % gyroItems.selectedArray.length]) {
@@ -39,13 +45,47 @@ function gyroRepeat(data) {
         }
     }
 }
-Myo.on('connected', function(){  
-    var myMyo = this;
-    addEvents(myMyo);
-});
+
+function beat() {
+    $("#otherCircle").show();
+    setTimeout(function() {
+        $("#otherCircle").hide()
+    }, 100);
+    if (holder != 0) {
+        pushOntoMe.push(holder - Date.now())
+    }
+    holder = Date.now();
+}
+
 function addEvents(myo) {
-    myo.on('gyroscope',function(data) {
-        setTimeout(gyroRepeat(data),10);
+    $(".conduct-btn").click(function() {
+        setTimeout(function() {
+            if (!conduct) {
+                conduct = true;
+                myo.on('gyroscope',function(data) {
+                    setTimeout(gyroRepeat(data),10);
+                });
+            } else {
+                conduct = false;
+                myo.off();
+                gyroItems.prevState;
+                gyroItems.receivedBeat;
+                gyroItems.beatNumber = 0;
+                gyroItems.selectedArray = fourFourArray;
+                gyroItems.state = gyroItems.selectedArray[0];
+                clearInterval(killMeOnExit);
+            }
+            killMeOnExit = startBeat($(".dial").val(), myo);
+        }, 2000);
     });
 }
-Myo.connect();
+try {
+    Myo.on('connected', function(){  
+        myMyo = this;
+        addEvents(myMyo);
+    });
+
+    Myo.connect();
+} catch (err) {
+    //cannot use Myo.
+}

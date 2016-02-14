@@ -1,5 +1,8 @@
 $(document).ready(function(){
-	$(".dial").knob();
+	$(".dial").knob({
+		width: 200,
+		height: 200
+	});
 
 	var conduct = false;
 	var countdown = false;
@@ -10,7 +13,7 @@ $(document).ready(function(){
 	$(".conduct-btn").click(function() {
 
 		if (!conduct) {
-			$(this).text("END"); 
+			$(this).text("RESET"); 
 			conduct = true;
 
 			$(".settings-page").fadeOut("slow", function() {
@@ -57,7 +60,10 @@ $(document).ready(function(){
 			        	$(".countdown-text").text("Ready?");
 						$(".output").fadeIn();
 						countdown = false;
+						$("#blip")[0].play();
 
+						$("#circle").show();
+						$("#circle").fadeOut(100);
 			        	startBeat(delay);
 			        });	
 				}
@@ -69,11 +75,9 @@ $(document).ready(function(){
 		beats = setInterval(function() {
 			$("#blip")[0].play();
 
-			$("#circle").fadeIn(100, function() {
-				$("#circle").fadeOut(100);
-			});
-
-		}, delay + 70 /* incorporate blip duration */);
+			$("#circle").show();
+			$("#circle").fadeOut(100);
+		}, delay/* incorporate blip duration */);
 	}
 
 	function stopBeat() {
