@@ -2,9 +2,9 @@
   "name": "train-conductor",
   "version": "0.0.0",
   "description": "Code from the React tutorial.",
-  "main": "countBeats.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node countBeats.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "body-parser": "^1.15.0",
@@ -14,7 +14,7 @@
   "devDependencies": {},
   "repository": {
     "type": "git",
-    "url": "https://mz496@bitbucket.org/werenotalltrees/myoconductor.git"
+    "url": "https://mzhang8.github.com/myoconductor.git"
   },
   "author": "",
   "license": "ISC"
